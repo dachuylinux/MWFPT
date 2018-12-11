@@ -1,0 +1,6 @@
+#portlet
+odoc-gateway-inet 				Liên thông VB đi
+idoc-status-gateway-inet		Quản lý gửi trạng thái liên thông
+odoc-status-gateway-inet		Quản lý nhận trạng thái liên thông
+external-idoc-gateway-inet		Quản lý nhận VB liên thông
+status-gateway-inet				Danh mục trạng thái
