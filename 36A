@@ -1,1 +1,98 @@
--- nothing
+CREATE TABLE `idoc_status_gateway_inet` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'base entity',
+  `isDeleted` bit(1) DEFAULT NULL COMMENT 'base entity',
+  `version` int(11) DEFAULT NULL COMMENT 'base entity',
+  `createdDate` datetime DEFAULT NULL COMMENT 'base entity',
+  `createdBy` bigint(20) DEFAULT NULL COMMENT 'base entity',
+  `modifiedDate` datetime DEFAULT NULL COMMENT 'base entity',
+  `modifiedBy` bigint(20) DEFAULT NULL COMMENT 'base entity',
+  `tenantId` int(20) DEFAULT NULL COMMENT 'base entity',
+  `tenantOrgId` int(20) DEFAULT NULL COMMENT 'base entity',
+  `pubNum` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pubDate` datetime DEFAULT NULL,
+  `pubOrgCode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pubOrgName` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `pubOrgId` bigint(20) DEFAULT NULL,
+  `codeStatusInet` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `description` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
+  `isSuccess` bit(1) DEFAULT NULL,
+  `sendDateSuccess` datetime DEFAULT NULL,
+  `sendUserId` bigint(20) DEFAULT NULL,
+  `idocId` bigint(20) DEFAULT NULL,
+  `fileName` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `fileUrl` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `logError` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--- -------------
+CREATE TABLE `odoc_gateway_inet` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `odocId` bigint(20) DEFAULT NULL,
+  `pubDate` datetime DEFAULT NULL,
+  `userUpdateId` bigint(20) DEFAULT NULL,
+  `userPubId` bigint(20) DEFAULT NULL,
+  `userNamePub` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `count` int(20) DEFAULT NULL,
+  `isSuccess` bit(1) DEFAULT NULL,
+  `pubDateSuccess` datetime DEFAULT NULL,
+  `isDeleted` bit(1) DEFAULT NULL,
+  `version` int(11) DEFAULT NULL,
+  `createdDate` datetime DEFAULT NULL,
+  `createdBy` bigint(20) DEFAULT NULL,
+  `modifiedDate` datetime DEFAULT NULL,
+  `modifiedBy` bigint(20) DEFAULT NULL,
+  `tenantId` int(20) DEFAULT NULL,
+  `tenantOrgId` int(20) DEFAULT NULL,
+  `pubNum` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `fileName` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `fileUrl` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `logError` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--- -------------
+CREATE TABLE `odoc_status_gateway_inet` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'base entity',
+  `isDeleted` bit(1) DEFAULT NULL COMMENT 'base entity',
+  `version` int(11) DEFAULT NULL COMMENT 'base entity',
+  `createdDate` datetime DEFAULT NULL COMMENT 'base entity',
+  `createdBy` bigint(20) DEFAULT NULL COMMENT 'base entity',
+  `modifiedDate` datetime DEFAULT NULL COMMENT 'base entity',
+  `modifiedBy` bigint(20) DEFAULT NULL COMMENT 'base entity',
+  `tenantId` int(20) DEFAULT NULL COMMENT 'base entity',
+  `tenantOrgId` int(20) DEFAULT NULL COMMENT 'base entity',
+  `pubNum` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pubDate` datetime DEFAULT NULL,
+  `orgFromCode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `orgFromName` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `orgFromId` bigint(20) DEFAULT NULL,
+  `codeStatusInet` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `description` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
+  `receiveDate` datetime DEFAULT NULL,
+  `receiveUserId` bigint(20) DEFAULT NULL,
+  `odocId` bigint(20) DEFAULT NULL,
+  `fileName` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `fileUrl` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `priority` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `logError` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--- -------------
+CREATE TABLE `status_gateway_inet` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'base entity',
+  `isDeleted` bit(1) DEFAULT NULL COMMENT 'base entity',
+  `version` int(11) DEFAULT NULL COMMENT 'base entity',
+  `createdDate` datetime DEFAULT NULL COMMENT 'base entity',
+  `createdBy` bigint(20) DEFAULT NULL COMMENT 'base entity',
+  `modifiedDate` datetime DEFAULT NULL COMMENT 'base entity',
+  `modifiedBy` bigint(20) DEFAULT NULL COMMENT 'base entity',
+  `tenantId` int(20) DEFAULT NULL COMMENT 'base entity',
+  `tenantOrgId` int(20) DEFAULT NULL COMMENT 'base entity',
+  `code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `priority` int(11) DEFAULT NULL,
+  `isActive` bit(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
