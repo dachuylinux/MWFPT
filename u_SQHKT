@@ -1,2 +1,13 @@
 ALTER TABLE onegate.incomedocument ADD COLUMN `dateOfAddition` datetime DEFAULT NULL COMMENT 'ngày bổ sung';
 ALTER TABLE onegate.incomedocument ADD COLUMN `totalOfAddition` bigint(20) DEFAULT NULL COMMENT 'số lần bổ sung';
+-- ---------
+CREATE TABLE `incomedocument_leader` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `incomeDocumentId` bigint(20) NOT NULL,
+  `userId` bigint(20) NOT NULL,
+  `tenantId` int(20) DEFAULT NULL,
+  `tenantOrgId` int(20) DEFAULT NULL,
+  `receiveId` bigint(20) DEFAULT NULL COMMENT 'current user assig to different user',
+  `roleLeader` tinyint(4) DEFAULT NULL COMMENT '0. ban giám đốc, 1. lãnh đạo phòng',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=175 DEFAULT CHARSET=utf8;
