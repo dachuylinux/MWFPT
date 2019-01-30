@@ -103,4 +103,6 @@ ALTER TABLE webidoc.externalidoc ADD COLUMN `fileName` varchar(255) DEFAULT NULL
 ALTER TABLE webidoc.externalidoc ADD COLUMN `fileUrl` varchar(255) DEFAULT NULL;
 ALTER TABLE webidoc.externalidoc ADD COLUMN `logError` text;
 
+-- bổ sung cột giá trị enum cho "Danh Mục trạng thái liên thông"
+ALTER TABLE webidoc.status_gateway_inet ADD COLUMN `documentStatus` tinyint(11) DEFAULT NULL;
 
