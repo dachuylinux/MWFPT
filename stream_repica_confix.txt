@@ -1,0 +1,54 @@
+https://www.gab.lc/articles/replication_postgresql/
+####################################ở phía master server####################################
+1. tạo user với role là REPLICATION
+CREATE USER replication REPLICATION LOGIN CONNECTION LIMIT 5 ENCRYPTED PASSWORD 'my_secret_password';
+2.sửa file config:
+---pg_hba.conf
+sudo vi /etc/postgresql/9.6/main/pg_hba.conf
+add end line: 
+host     replication     replication     [SLAVE_IP]/32          md5
+---postgresql.conf
+sudo vi /etc/postgresql/9.6/main/postgresql.conf
+listen_addresses = 'localhost,[IP_ADDRESS_OF_MASTER_ON_LAN]'
+wal_level = '' >>logical, repica, ...
+archive_mode = on
+archive_command = 'cd .'
+max_wal_senders = 5 >> tương ứng với số lượng slave
+hot_standby = on
+3. restart lại service
+service postgresql restart
+####################################ở phía slave server####################################
+1. stop service
+service postgresql stop
+2.sửa file config:
+#####pg_hba.conf####
+sudo vi /etc/postgresql/9.6/main/pg_hba.conf
+add end line: 
+host     replication     replication     [MASTER_IP]/32          md5
+#####postgresql.conf####
+sudo vi /etc/postgresql/9.6/main/postgresql.conf
+listen_addresses = 'localhost,[IP_ADDRESS_OF_SLAVE_ON_LAN]'              # what IP address(es) to listen on; 
+max_connections = 100 # Ensure that this value is the same as the master's
+wal_level = '' >> trùng giá trị của master
+archive_mode = on
+archive_command = 'cd .'
+max_wal_senders = 5
+hot_standby = on
+3. backup
+mv /var/lib/postgresql/9.6/main /var/lib/postgresql/9.6/main_old
+4.run command:
+#sudo -u postgres pg_basebackup -h [MASTER_IP] -D /var/lib/postgresql/9.6/main -U replication -P -v
+...Password: # Type the replication password defined earlier on the master
+
+4. config recovery file
+/var/lib/postgresql/9.6/main/recovery.conf bổ sung
+#####################
+standby_mode = 'on'
+primary_conninfo = 'host=[MASTER_IP] port=5432 user=replication password=my_secret_password'
+trigger_file = '/tmp/postgresql.trigger.5432'
+#####################
+chown postgres.postgres /var/lib/postgresql/9.6/main/recovery.conf >> permission
+service postgresql start
+
+
+
