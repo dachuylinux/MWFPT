@@ -11,3 +11,92 @@ CREATE TABLE `incomedocument_leader` (
   `roleLeader` tinyint(4) DEFAULT NULL COMMENT '0. ban giám đốc, 1. lãnh đạo phòng',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=175 DEFAULT CHARSET=utf8;
+-- -----
+DROP PROCEDURE webidoc.reportLookUp;
+
+
+CREATE PROCEDURE webidoc.reportLookUp(
+	IN _loaiLinhVuc VARCHAR(500),
+	IN _loaiHoSo VARCHAR(500),
+	IN _tenInfoOther LONGTEXT CHARSET utf8,
+	IN _receiptNumber LONGTEXT CHARSET utf8,
+	IN _clientname LONGTEXT CHARSET utf8,
+	IN _fromDate DATETIME,
+	IN _toDate DATETIME,
+	IN _processSateId BIGINT(20),
+	IN _numberDocument BIGINT(20),
+	IN _cityAdvance LONGTEXT CHARSET utf8,
+	IN _districtAdvance LONGTEXT CHARSET utf8,
+	IN _wardAdvance LONGTEXT CHARSET utf8,
+	IN _quarter LONGTEXT CHARSET utf8,
+	IN _houseNumber LONGTEXT CHARSET utf8,
+	IN _searchStreet LONGTEXT CHARSET utf8,
+	IN _incomeType INT,
+	IN _representative LONGTEXT CHARSET utf8,
+	IN _tenantId BIGINT(20),
+	IN _tenantOrgId BIGINT(20)
+)
+BEGIN
+	-- table lay thong tin pubNum, pubDate
+	CREATE TEMPORARY TABLE webidoc.CongVan(
+		id BIGINT(20),
+		pubNum VARCHAR(200),
+		pubDate DATETIME
+	);
+	INSERT INTO webidoc.CongVan
+	SELECT e.incomeDocumentId, o.pubNum, o.pubDate
+	FROM webidoc.odoc o
+	INNER JOIN webidoc.edoc_incomedocument e ON o.id = e.edocId
+	WHERE linkType = 2
+	GROUP BY e.incomeDocumentId,e.linkType;
+	-- end
+	
+  -- table lay thong tin Trang thai thu ly ho so
+	CREATE TEMPORARY TABLE TrangThaiThuLy_HS(
+		incomedocumentId BIGINT(20),
+		processStateId BIGINT(20),
+		processStateName VARCHAR(500)
+	);
+	INSERT INTO TrangThaiThuLy_HS
+	SELECT A.incomedocumentId_, state.id, state.processStateName FROM (
+		SELECT incomedocumentId_, MAX(processstateId_) as processStateId FROM onegate.incomedocumentstate group by incomedocumentId_
+	) A LEFT JOIN masterdb.processstate state ON A.processStateId = state.id AND state.isDeleted = 0;
+	-- end
+	-- result
+	SELECT main.id,docType.name, main.receiptNumber, main.clientname, main.tenInfoOther, main.registryAddress,
+	main.receivedDate, main.returnDate,
+	onegate.getPhongThuLy(main.id) as phongThuLy,
+	onegate.getNguoiThuLy(main.id) as nguoiThuLy,
+	main.incomeType, tths.processStateName, main.finishDate,
+	cv.pubNum, cv.pubDate, main.note
+	FROM onegate.incomedocument main
+	INNER JOIN onegate.documenttype_org docType ON main.documenttypeId_ = docType.id
+	LEFT JOIN webidoc.TrangThaiThuLy_HS tths ON tths.incomedocumentId = main.id
+	LEFT JOIN webidoc.CongVan cv ON cv.id = main.id
+	WHERE (1=1) AND main.isDeleted = 0 AND main.tenantId = _tenantId AND main.tenantOrgId = _tenantOrgId
+	-- loai linh vuc
+	AND (_loaiLinhVuc IS NULL OR FIND_IN_SET(main.workingFieldId_,_loaiLinhVuc))
+	-- loai ho so
+	AND (_loaiHoSo IS NULL OR FIND_IN_SET(docType.id,_loaiHoSo))
+	
+	AND (_tenInfoOther IS NULL OR main.tenInfoOther LIKE CONCAT('%', _tenInfoOther , '%'))
+	AND (_receiptNumber IS NULL OR main.receiptNumber LIKE CONCAT('%', _receiptNumber , '%'))
+	AND (_clientname IS NULL OR main.clientname LIKE CONCAT('%', _clientname , '%'))
+	AND (_fromDate IS NULL OR main.receivedDate >= _fromDate)
+	AND (_toDate IS NULL OR main.receivedDate <= _toDate)
+	AND (_processSateId IS NULL OR tths.processStateId = _processSateId)
+	AND (_numberDocument IS NULL OR main.numberDocument = _numberDocument)
+	-- 
+	AND (_cityAdvance IS NULL OR main.registryAddress LIKE CONCAT('%', _cityAdvance , '%'))
+	AND (_districtAdvance IS NULL OR main.registryAddress LIKE CONCAT('%', _districtAdvance , '%'))
+	AND (_wardAdvance IS NULL OR main.registryAddress LIKE CONCAT('%', _wardAdvance , '%'))
+	AND (_quarter IS NULL OR main.registryAddress LIKE CONCAT('%', _quarter , '%'))
+	AND (_searchStreet IS NULL OR main.registryAddress LIKE CONCAT('%', _searchStreet , '%'))
+	AND (_houseNumber IS NULL OR main.registryAddress LIKE CONCAT('%', _houseNumber , '%'))
+	-- 
+	AND (_incomeType IS NULL OR main.incomeType = _incomeType)
+	AND (_representative IS NULL OR main.representative = _representative)
+	;
+	DROP TABLE webidoc.CongVan;
+	DROP TABLE webidoc.TrangThaiThuLy_HS;
+END;
