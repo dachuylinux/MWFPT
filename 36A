@@ -105,4 +105,5 @@ ALTER TABLE webidoc.externalidoc ADD COLUMN `logError` text;
 
 -- bổ sung cột giá trị enum cho "Danh Mục trạng thái liên thông"
 ALTER TABLE webidoc.status_gateway_inet ADD COLUMN `documentStatus` tinyint(11) DEFAULT NULL;
-
+-- bổ sung filePath từ trên server DVC
+ALTER TABLE onegate.incomedocument ADD COLUMN `filePathExternal` varchar(256) DEFAULT NULL;
